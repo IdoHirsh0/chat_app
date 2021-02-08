@@ -37,26 +37,33 @@ class _NewMessageState extends State<NewMessage> {
     return Container(
       margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(8),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                labelText: 'Send message...',
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    labelText: 'Send message...',
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _enteredMessage = value;
+                    });
+                  },
+                ),
               ),
-              onChanged: (value) {
-                setState(() {
-                  _enteredMessage = value;
-                });
-              },
-            ),
+              IconButton(
+                color: Theme.of(context).primaryColor,
+                icon: Icon(Icons.send),
+                onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
+              ),
+            ],
           ),
-          IconButton(
-            color: Theme.of(context).primaryColor,
-            icon: Icon(Icons.send),
-            onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
-          ),
+          SizedBox(
+            height: 35,
+          )
         ],
       ),
     );
