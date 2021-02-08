@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import './message_bubble.dart';
+import 'package:chat_app/screens/splash_screen.dart';
 
 class Messages extends StatelessWidget {
   @override
@@ -11,7 +12,7 @@ class Messages extends StatelessWidget {
       future: FirebaseAuth.instance.currentUser(),
       builder: (ctx, futureSnapshot) {
         if (futureSnapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return SplashScreen();
         }
         return StreamBuilder(
           stream: Firestore.instance
@@ -20,7 +21,7 @@ class Messages extends StatelessWidget {
               .snapshots(),
           builder: (context, chatSnapshot) {
             if (chatSnapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return SplashScreen();
             }
             final chatDocs = chatSnapshot.data.documents;
             return ListView.builder(
