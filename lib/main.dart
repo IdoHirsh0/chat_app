@@ -16,12 +16,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Chat',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        backgroundColor: Colors.deepPurple,
-        accentColor: Colors.deepPurple,
+        primaryColor: Colors.black,
+        backgroundColor: Colors.black,
+        accentColor: Colors.black,
         accentColorBrightness: Brightness.dark,
         buttonTheme: ButtonTheme.of(context).copyWith(
-          buttonColor: Colors.deepPurple,
+          buttonColor: Colors.black,
           textTheme: ButtonTextTheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
