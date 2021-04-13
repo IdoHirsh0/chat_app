@@ -27,17 +27,87 @@ class Messages extends StatelessWidget {
             return ListView.builder(
               reverse: true,
               itemCount: chatSnapshot.data.documents.length,
-              itemBuilder: (ctx, i) => MessageBubble(
-                chatDocs[i]['text'],
-                chatDocs[i]['username'],
-                chatDocs[i]['userImage'],
-                chatDocs[i]['userId'] == futureSnapshot.data.uid,
-                key: ValueKey(chatDocs[i].documentID),
+              itemBuilder: (ctx, i) => InkWell(
+                onTap: () async {
+                  await deleteMessage(context, chatDocs, i);
+                },
+                child: MessageBubble(
+                  chatDocs[i]['text'],
+                  chatDocs[i]['username'],
+                  chatDocs[i]['userImage'],
+                  chatDocs[i]['userId'] == futureSnapshot.data.uid,
+                  key: ValueKey(chatDocs[i].documentID),
+                ),
               ),
             );
           },
         );
       },
     );
+  }
+
+  Future<void> deleteMessage(BuildContext context, chatDocs, i) async {
+    final curUser = await FirebaseAuth.instance.currentUser();
+
+    if (curUser.uid == chatDocs[i]['userId']) {
+      bool isDelete = await showAlertDialog(context);
+      if (isDelete) {
+        final doc = await Firestore.instance
+            .collection('chat')
+            .where('id', isEqualTo: chatDocs[i]['id'])
+            .getDocuments();
+
+        final docID = doc.documents.first.documentID;
+
+        await Firestore.instance.collection('chat').document(docID).delete();
+
+        print('deleted message $docID');
+      }
+    } else {
+      print('Not your message');
+    }
+  }
+
+  Future<bool> showAlertDialog(BuildContext context) async {
+    bool isDelete = false;
+
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        isDelete = false;
+        Navigator.of(context).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text(
+        "Delete",
+        style: TextStyle(color: Theme.of(context).errorColor),
+      ),
+      onPressed: () {
+        isDelete = true;
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete message?"),
+      content: Text("Would you like to delete that message from everyone?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+
+    return isDelete;
   }
 }
