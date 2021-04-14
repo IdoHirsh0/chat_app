@@ -52,9 +52,12 @@ class _ChatScreenState extends State<ChatScreen> {
               children: <Widget>[
                 SizedBox(height: 100),
                 ListTile(
-                  leading: Icon(Icons.settings),
+                  leading: Icon(
+                    Icons.settings,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   title: Text(
-                    'setting',
+                    'settings',
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   onTap: () {
