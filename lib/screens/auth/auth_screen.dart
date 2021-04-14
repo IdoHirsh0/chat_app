@@ -5,9 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../widgets/auth/auth_form.dart';
+import '../../widgets/auth/auth_form.dart';
 
 class AuthScreen extends StatefulWidget {
+  static const routeName = '/auth-screen';
+
   @override
   _AuthScreenState createState() => _AuthScreenState();
 }
@@ -50,6 +52,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
         final url = await ref.getDownloadURL();
 
+        // Add user to firestore db
         await Firestore.instance
             .collection('users')
             .document(authResult.user.uid)

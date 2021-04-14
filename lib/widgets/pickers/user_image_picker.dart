@@ -34,10 +34,11 @@ class _UserImagePickerState extends State<UserImagePicker> {
     return Column(
       children: [
         CircleAvatar(
-          radius: 40,
-          backgroundImage:
-              _pickedImage != null ? FileImage(_pickedImage) : null,
-          backgroundColor: Colors.grey,
+          radius: 50,
+          backgroundImage: _pickedImage != null
+              ? FileImage(_pickedImage)
+              : AssetImage('assets/images/user.png'),
+          backgroundColor: Colors.white,
         ),
         FlatButton.icon(
           textColor: Theme.of(context).primaryColor,

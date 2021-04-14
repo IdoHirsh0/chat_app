@@ -38,39 +38,50 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(8),
-      child: Column(
-        children: [
-          Row(
+      child: Card(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: Theme.of(context).primaryColor,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        elevation: 10,
+        color: Colors.white,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Column(
             children: [
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  textCapitalization: TextCapitalization.sentences,
-                  autocorrect: true,
-                  enableSuggestions: true,
-                  decoration: InputDecoration(
-                    labelText: 'Send message...',
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      textCapitalization: TextCapitalization.sentences,
+                      autocorrect: true,
+                      enableSuggestions: true,
+                      decoration: InputDecoration(
+                          hintText: 'Send message...',
+                          border: InputBorder.none),
+                      onChanged: (value) {
+                        setState(() {
+                          _enteredMessage = value;
+                        });
+                      },
+                    ),
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      _enteredMessage = value;
-                    });
-                  },
-                ),
-              ),
-              IconButton(
-                color: Theme.of(context).primaryColor,
-                icon: Icon(Icons.send),
-                onPressed: _enteredMessage.trim().isEmpty ? null : _sendMessage,
+                  IconButton(
+                    color: Theme.of(context).accentColor,
+                    icon: Icon(Icons.send),
+                    onPressed:
+                        _enteredMessage.trim().isEmpty ? null : _sendMessage,
+                  ),
+                ],
               ),
             ],
           ),
-          SizedBox(
-            height: 35,
-          )
-        ],
+        ),
       ),
     );
   }

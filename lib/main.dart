@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-import './screens/chat_screen.dart';
-import './screens/auth_screen.dart';
-import './screens/splash_screen.dart';
+import 'screens/auth/auth_screen.dart';
+import 'screens/chat/chat_screen.dart';
+import 'screens/dm/private_chat_screen.dart';
+import 'screens/settings_screen.dart';
+import 'screens/splash_screen.dart';
+import 'screens/chat/user_details_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,14 +20,13 @@ class MyApp extends StatelessWidget {
       title: 'Blackspace',
       theme: ThemeData(
         primaryColor: Colors.black,
-        backgroundColor: Colors.black,
         accentColor: Colors.black,
         accentColorBrightness: Brightness.dark,
         buttonTheme: ButtonTheme.of(context).copyWith(
           buttonColor: Colors.black,
           textTheme: ButtonTextTheme.primary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
       ),
@@ -40,6 +42,13 @@ class MyApp extends StatelessWidget {
           return AuthScreen();
         },
       ),
+      routes: {
+        UserDetailsScreen.routeName: (ctx) => UserDetailsScreen(),
+        ChatScreen.routeName: (ctx) => ChatScreen(),
+        SettingsScreen.routeName: (ctx) => SettingsScreen(),
+        AuthScreen.routeName: (ctx) => AuthScreen(),
+        PrivateChatScreen.routeName: (ctx) => PrivateChatScreen(),
+      },
     );
   }
 }

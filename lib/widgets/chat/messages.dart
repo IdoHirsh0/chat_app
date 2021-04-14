@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-import './message_bubble.dart';
-import 'package:chat_app/screens/splash_screen.dart';
+import '../../screens/splash_screen.dart';
+import '../../screens/chat/user_details_screen.dart';
+import 'message_bubble.dart';
 
 class Messages extends StatelessWidget {
   @override
@@ -13,35 +14,37 @@ class Messages extends StatelessWidget {
       builder: (ctx, futureSnapshot) {
         if (futureSnapshot.connectionState == ConnectionState.waiting) {
           return SplashScreen();
+        } else {
+          return StreamBuilder(
+            stream: Firestore.instance
+                .collection('chat')
+                .orderBy('createdAt', descending: true)
+                .snapshots(),
+            builder: (context, chatSnapshot) {
+              if (chatSnapshot.connectionState == ConnectionState.waiting) {
+                return SplashScreen();
+              } else {
+                final chatDocs = chatSnapshot.data.documents;
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: chatSnapshot.data.documents.length,
+                  itemBuilder: (ctx, i) => InkWell(
+                    onLongPress: () async {
+                      await deleteMessage(context, chatDocs, i);
+                    },
+                    child: MessageBubble(
+                      chatDocs[i]['text'],
+                      chatDocs[i]['username'],
+                      chatDocs[i]['userImage'],
+                      chatDocs[i]['userId'] == futureSnapshot.data.uid,
+                      key: ValueKey(chatDocs[i].documentID),
+                    ),
+                  ),
+                );
+              }
+            },
+          );
         }
-        return StreamBuilder(
-          stream: Firestore.instance
-              .collection('chat')
-              .orderBy('createdAt', descending: true)
-              .snapshots(),
-          builder: (context, chatSnapshot) {
-            if (chatSnapshot.connectionState == ConnectionState.waiting) {
-              return SplashScreen();
-            }
-            final chatDocs = chatSnapshot.data.documents;
-            return ListView.builder(
-              reverse: true,
-              itemCount: chatSnapshot.data.documents.length,
-              itemBuilder: (ctx, i) => InkWell(
-                onTap: () async {
-                  await deleteMessage(context, chatDocs, i);
-                },
-                child: MessageBubble(
-                  chatDocs[i]['text'],
-                  chatDocs[i]['username'],
-                  chatDocs[i]['userImage'],
-                  chatDocs[i]['userId'] == futureSnapshot.data.uid,
-                  key: ValueKey(chatDocs[i].documentID),
-                ),
-              ),
-            );
-          },
-        );
       },
     );
   }
@@ -64,7 +67,15 @@ class Messages extends StatelessWidget {
         print('deleted message $docID');
       }
     } else {
-      print('Not your message');
+      Navigator.of(context).pushNamed(
+        UserDetailsScreen.routeName,
+        arguments: {
+          'user': await Firestore.instance
+              .collection('users')
+              .document(chatDocs[i]['userId'])
+              .get(),
+        },
+      );
     }
   }
 
